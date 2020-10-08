@@ -26,7 +26,7 @@ GLuint vbo[numVBOs];
 GLuint myLoc, projLoc;
 int width, height;
 float aspect;
-glm::mat4 pMat, vMat, mMat, mvMat, rotMat;
+glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat;
 
 // Eventually might be able to pass a file into here or something
 void setupVerticies(void) {
@@ -70,10 +70,20 @@ void display(GLFWwindow* window, double currentTime) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(renderingProgram);
 	
+	tMat = glm::translate(glm::mat4(1.0f),
+		glm::vec3(sin(0.35f*currentTime)*2.0f, 
+		cos(0.52f*currentTime)*2.0f,
+		sin(0.7f*currentTime)*2.0f ));
+	rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+	rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
+	rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
+	mMat = tMat * rMat;
+
+	//Utils::checkOpenGLError();
+
 	// get uniform variables for MV and projection matricies
 	GLuint mvLoc = glGetUniformLocation(renderingProgram, "mv_matrix");
 	GLuint projLoc = glGetUniformLocation(renderingProgram, "proj_matrix");
-	GLuint projRot = glGetUniformLocation(renderingProgram, "rot_matrix");
 	
 	// build perspective matrix
 	glfwGetFramebufferSize(window, &width, &height);
@@ -83,14 +93,11 @@ void display(GLFWwindow* window, double currentTime) {
 	
 	// Build View Matrix
 	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ) ); // reverse the camera coordinates
-	mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ) );  // position of the cube
 	mvMat = vMat * mMat;
-	rotMat = glm::rotate(glm::mat4(1.0f), (float)(currentTime), glm::vec3(1,1,1));
 
 	//put matricies into correct uniform variables in rendering program
 	glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
-	glUniformMatrix4fv(projRot, 1, GL_FALSE, glm::value_ptr(rotMat));
 
 	// Vertex Buffer Object gets associated with the correct vertex 
 	// attribute in the vertex shader

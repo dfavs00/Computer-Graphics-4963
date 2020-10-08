@@ -32,7 +32,7 @@ void writeToFile(const char* filename) {
 }
 
 
-/*check bresenham when changing y*/
+/*check bresenham when changing y to stay near slope line*/
 void bresenhamLow(int* color, int x1, int y1, int x2, int y2) {
 	int dx = x2 - x1;
 	int dy = y2 - y1;
@@ -66,7 +66,7 @@ void bresenhamLow(int* color, int x1, int y1, int x2, int y2) {
 }
 
 
-/*check bresenham when changing x*/
+/*check bresenham when changing x to stay near slope line*/
 void bresenhamHigh(int* color, int x1, int y1, int x2, int y2) {
 	int dx = x2 - x1;
 	int dy = y2 - y1;
@@ -91,7 +91,6 @@ void bresenhamHigh(int* color, int x1, int y1, int x2, int y2) {
 		//------------------------------------
 
 		// increment y if the Difference between points is positive
-		cout << D << endl;
 		if (D > 0) {
 			x += x_increment;
 			D = D + (2 * (dx - dy));
@@ -148,10 +147,26 @@ void makeRectangle(int* color, int x1, int y1, int x2, int y2) {
 }
 
 
-/* fill the inside of the rectangle */
-void fill(int* color) {
-
+/* This is a recursive driver function */
+/* fill the inside of the rectangle using recursive "splotching" given the bounds of the rectangle*/
+void fillRectangle(int* color, int startX, int startY, int endX, int endY) {
+	// simply iterate over the entire rectangle setting the color at each point
+	for (int x = startX; x <= endX; x++) {
+		for (int y = startY; y <= endY; y++) {
+			for (int c = 0; c < 3; c++) {
+				colorBuffer[x][y][c] = color[c];
+			}
+		}
+	}
 }
+
+
+/* make filled rectangle with top left and bottom right point*/
+/* any other input results in undefined behavior */
+void makeFilledRectangle(int* color, int x1, int y1, int x2, int y2) {
+	fillRectangle(color, x1,y1,x2,y2);
+}
+
 
 /*Initialize color buffer to be all an all black color*/
 void initializeColorBuffer() {
@@ -175,13 +190,15 @@ int main() {
 	int rectangleBotRight_y = 40;
 
 	// rgb color could have made it a struct but eh
-	int color[3] = {0,15,7};
-
+	int color_0[3] = {0,15,7};
+	int color_1[3] = {15,15,15};
 	// test brisenham
-	//brisenham(color, 10,60,40,8);
+	//brisenham(color_0, 10,60,40,8);
 
 	// make the rectangle
-    makeRectangle(color, rectangleTopLeft_x, rectangleTopLeft_y, rectangleBotRight_x, rectangleBotRight_y);
+    makeRectangle(color_0, rectangleTopLeft_x, rectangleTopLeft_y, rectangleBotRight_x, rectangleBotRight_y);
+	makeFilledRectangle(color_1, 15, 15, 35, 35);
+
 
 	// write to a ppm file at the end of the program
 	writeToFile("test.ppm");

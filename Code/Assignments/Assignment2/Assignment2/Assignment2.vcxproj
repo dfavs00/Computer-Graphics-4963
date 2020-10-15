@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{ebaa9973-c7fd-4dc2-af04-a10b32d65015}</ProjectGuid>
-    <RootNamespace>ImguiAsignment2</RootNamespace>
+    <ProjectGuid>{d191abc4-9783-4c4e-aa72-1f370c88da12}</ProjectGuid>
+    <RootNamespace>Assignment2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -126,6 +126,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="fragShader.glsl" />
+    <None Include="imgui.ini" />
+    <None Include="vertShader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="cubeTexture.jpg" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -136,10 +144,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Sphere.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="fragShader.glsl" />
-    <None Include="vertShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
@@ -153,9 +157,6 @@
     <ClInclude Include="ImportedModel.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="cubeTexture.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

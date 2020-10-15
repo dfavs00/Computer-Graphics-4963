@@ -266,7 +266,7 @@ void drawObjectCollections() {
 	}
 	if (ImGui::Button("Add Sphere")) {
 		// add a child to the collection with spheres
-		Object* newObj = new Object(2, 3, 0, sphere.getNumVertices());
+		Object* newObj = new Object(2, 3, 0, sphere.getNumIndicies());
 		collection.addChildObject(newObj);
 		collectionPositions.push_back(glm::vec3(0, 0, 0));
 		collectionRotations.push_back(glm::vec3(0, 0, 0));
@@ -305,9 +305,6 @@ void drawObjectCollections() {
 	}
 
 }
-
-
-
 
 
 int main(int, char**)

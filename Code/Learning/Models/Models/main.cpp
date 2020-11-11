@@ -38,7 +38,7 @@ glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat;
 Sphere sphere(48);
 
 // shuttle object
-ImportedModel model("shuttle.obj");
+ImportedModel model("cone.obj");
 
 // Eventually might be able to pass a file into here or something
 void setupVerticies(void) {
@@ -107,7 +107,7 @@ void setupVerticies(void) {
 	vector<float> tvaluesM;	// texture
 	vector<float> nvaluesM;	// normal
 
-	cout << vertM.size() << endl;
+	//cout << vertM.size() << endl;
 
 	// populate buffer arrays
 	for (int i = 0; i < numObjVertices; i++) {
@@ -171,7 +171,7 @@ void window_reshape_callback(GLFWwindow* window, int newWidth, int newHeight) {
 void init(GLFWwindow* window) {
 
 	renderingProgram = Utils::createShaderProgram("vertShader.glsl", "fragShader.glsl");
-	cameraX = 0.0f, cameraY = 0.0f, cameraZ = 8.0f;
+	cameraX = 0.0f, cameraY = 0.0f, cameraZ = 15.0f;
 	cubeLocX = 0.0f, cubeLocY = -2.0f, cubeLocZ = 0.0f;
 	setupVerticies();
 

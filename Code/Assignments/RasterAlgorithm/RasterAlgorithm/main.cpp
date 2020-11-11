@@ -4,9 +4,23 @@
 #include <fstream>
 using namespace std;
 
+/*Struct of a 2D vertex*/
+struct Vertex2D {
+	int x;
+	int y;
+};
+
+int color_0[3] = { 0,15,7 };
+int color_1[3] = { 15,15,15 };
+
 const int width = 64;			   // width in pixels of the file
 const int height = 64;			   // height in pixels of the file
 int colorBuffer[width][height][3]; // pixel color buffer for the ppm file (3 comes from rgb, the rest is the number of pixels in the file)
+
+
+int* triangleStrip;		   // triangle strip vertex2D array
+int triangleStripCoords[8] = { 5, 5, 5, 10, 10, 5,
+								 10, 10 };
 
 /*
 write on existing file data with new file data
@@ -66,6 +80,14 @@ void bresenhamLow(int* color, int x1, int y1, int x2, int y2) {
 }
 
 
+/*Draw a pixel at ppm file location (x y) with specified color*/
+void drawPixel(int x, int y, int* color) {
+	colorBuffer[y][x][0] = color[0];
+	colorBuffer[y][x][1] = color[1];
+	colorBuffer[y][x][2] = color[2];
+}
+
+
 /*check bresenham when changing x to stay near slope line*/
 void bresenhamHigh(int* color, int x1, int y1, int x2, int y2) {
 	int dx = x2 - x1;
@@ -85,6 +107,7 @@ void bresenhamHigh(int* color, int x1, int y1, int x2, int y2) {
 		
 
 		// Set the color if the current point
+
 		colorBuffer[y][x][0] = color[0];
 		colorBuffer[y][x][1] = color[1];
 		colorBuffer[y][x][2] = color[2];
@@ -168,6 +191,12 @@ void makeFilledRectangle(int* color, int x1, int y1, int x2, int y2) {
 }
 
 
+/*draw line with specified color and points*/
+void drawLine(int* color, int x1, int y1, int x2, int y2) {
+	brisenham(color, x1, y1, x2, y2);
+}
+
+
 /*Initialize color buffer to be all an all black color*/
 void initializeColorBuffer() {
 	for (int i = 0; i < width; i++) {
@@ -179,28 +208,102 @@ void initializeColorBuffer() {
 	}
 }
 
+/*draw a triangle with a color given 3 points*/
+void drawTriangle(Vertex2D one, Vertex2D two, Vertex2D three, int* color) {
+	drawLine(color, one.x, one.y, two.x, two.y);
+	drawLine(color, two.x, two.y, three.x, three.y);
+	drawLine(color, three.x, three.y, one.x, one.y);
+}
 
-int main() {
-	//initialize the color Buffer array to be all black
+
+/*draw a triangle with a color given 3 points*/
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int* color) {
+	drawLine(color, x1, y1, x2, y2);
+	drawLine(color, x2, y2, x3, y3);
+	drawLine(color, x3, y3, x1, y1);
+}
+
+
+/*draw bezier curve given four points given in an x array and y array with the specified color*/
+void bezierCurve(int* color, int* x_points, int* y_points) {
+
+}
+
+
+/*draw a 2D triangle strip given an array of triangle coordinates*/
+void drawTriangleStrip2D(int* vertexArray, int numVertices, int* color) {
+
+	int size = numVertices * 2;
+	//cout << color[0] << endl;
+
+	// keep track of 3 points at a time and replace the last used point every time a new point is read in
+	int x1=0, y1=1, x2=2, y2=3, x3=4, y3=5;
+
+	while (y3 < size) {
+
+		// draw triangle
+		drawTriangle(vertexArray[x1], vertexArray[y1], vertexArray[x2], vertexArray[y2], vertexArray[x3], vertexArray[y3], color);
+
+		// inrement each stream iterator 
+		x1 += 2; y1 += 2;
+		x2 += 2; y2 += 2;
+		x3 += 2; y3 += 2;
+	}
+}
+
+
+/*setup the vertices for a the array of Vertex2D array*/
+void setupVertices() {
+
+	
+
+	// set triangle strip to have the coordinates specified in triangle strip coord
+	triangleStrip = triangleStripCoords;
+}
+
+
+
+void init() {
+	setupVertices();
+}
+
+
+void test() {
+
 
 	// coordinates are in rows and columns in this type of file
-	int rectangleTopLeft_x = 10;
-	int rectangleTopLeft_y = 10;
-	int rectangleBotRight_x = 40;
-	int rectangleBotRight_y = 40;
+	//int rectangleTopLeft_x = 10;
+	//int rectangleTopLeft_y = 10;
+	//int rectangleBotRight_x = 40;
+	//int rectangleBotRight_y = 40;
 
-	// rgb color could have made it a struct but eh
-	int color_0[3] = {0,15,7};
-	int color_1[3] = {15,15,15};
 	// test brisenham
 	//brisenham(color_0, 10,60,40,8);
 
-	// make the rectangle
-    makeRectangle(color_0, rectangleTopLeft_x, rectangleTopLeft_y, rectangleBotRight_x, rectangleBotRight_y);
-	makeFilledRectangle(color_1, 15, 15, 35, 35);
+	// test rectangle
+	//makeRectangle(color_0, rectangleTopLeft_x, rectangleTopLeft_y, rectangleBotRight_x, rectangleBotRight_y);
+	//makeFilledRectangle(color_1, 15, 15, 35, 35);
 
+	// test triangle
+	//Vertex2D one, two, three;
+	//one.x = 5; one.y = 5;
+	//two.x = 5, two.y = 10;
+	//three.x = 10; three.y = 5;
+	//drawTriangle(one, two, three, color_0);
+
+	//test triangle strip
+	
+	drawTriangleStrip2D(triangleStrip, 4, color_1);
+}
+
+
+int main() {
+
+	init();
+	test();
 
 	// write to a ppm file at the end of the program
+	cout << "writing to file" << endl;
 	writeToFile("test.ppm");
 
 	return EXIT_SUCCESS;
